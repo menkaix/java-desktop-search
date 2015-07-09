@@ -1,3 +1,6 @@
+import core.file.FileSpider;
+import core.threads.SpiderPoolInternal;
+
 
 public class Main {
 
@@ -5,7 +8,8 @@ public class Main {
 		
 		
 		System.out.println("Hello world");
-
+		SpiderPoolInternal.getInstance().execute(new FileSpider());
+		System.out.println("Done");
 	}
 
 }
