@@ -1,4 +1,4 @@
-import core.file.FileSpider;
+import core.threads.FileSpider;
 import core.threads.SpiderPoolInternal;
 
 

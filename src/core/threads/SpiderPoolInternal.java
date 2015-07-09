@@ -33,12 +33,13 @@ public class SpiderPoolInternal {
     
     
     private ThreadPoolExecutor executor ;
+    private  BlockingQueue<Runnable> queue = new LinkedBlockingDeque<Runnable>();
    
     
     private SpiderPoolInternal(){
         
         //executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(threadLimit);
-        executor = new ThreadPoolExecutor(0,150,5, TimeUnit.DAYS,new LinkedBlockingDeque<Runnable>());
+        executor = new ThreadPoolExecutor(0,150,5, TimeUnit.DAYS, queue);
        
     }
     
@@ -47,6 +48,9 @@ public class SpiderPoolInternal {
     public void execute(Thread pThread){
     	
     	executor.execute(pThread);
+    	
+    	
+    	
     }
     
 }

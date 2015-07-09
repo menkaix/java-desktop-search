@@ -2,11 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package core.file;
+package core.threads;
 
 import java.io.File;
-
-import core.threads.SpiderPoolInternal;
 
 
 
