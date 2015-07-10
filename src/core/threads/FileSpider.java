@@ -1,20 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package core.threads;
 
 import java.io.File;
+import java.util.Vector;
+
+import core.events.SpiderListener;
 
 
-
-/**
- *
- * @author mendrika
- */
 public class FileSpider extends Thread{
     
-    private String filePath ;
+    public String filePath ;
+    private Vector<SpiderListener> listeners = new Vector<SpiderListener>() ;
     
     public FileSpider(){
         this(".");
@@ -22,9 +17,12 @@ public class FileSpider extends Thread{
     
     public FileSpider(String path){
         filePath = path ;
+        listeners.add(SpiderPoolInternal.getInstance());
     }
     
     public void run(){
+    	
+    	fireSpiderBegin();
         
         File file = new File(filePath);
         
@@ -38,11 +36,28 @@ public class FileSpider extends Thread{
         }
         else {
             eat() ;
+            
         }
-        
+        fireSpiderEnd();
     }
     
-    public void eat(){
+    private void fireSpiderEnd() {
+    	
+		for(SpiderListener l : listeners){
+			l.onSpiderEnd(this);
+		}
+		
+	}
+
+	private void fireSpiderBegin() {
+		
+		for(SpiderListener l : listeners){
+			l.onSpiderBegin(this);
+		}
+		
+	}
+
+	public void eat(){
     	System.out.println(filePath);
     }
     

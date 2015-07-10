@@ -9,7 +9,7 @@ public class Main {
 		
 		System.out.println("Hello world");
 		SpiderPoolInternal.getInstance().execute(new FileSpider());
-		System.out.println("Done");
+		
 	}
 
 }
