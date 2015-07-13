@@ -17,7 +17,7 @@ public class FileSpider extends Thread{
     
     public FileSpider(String path){
         filePath = path ;
-        listeners.add(SpiderPoolInternal.getInstance());
+        
     }
     
     public void run(){
@@ -30,7 +30,7 @@ public class FileSpider extends Thread{
             File[] children = file.listFiles();
             for(File f : children){
                 
-            	SpiderPoolInternal.getInstance().execute(new FileSpider(f.getAbsolutePath())) ;
+            	//SpiderPool.getInstance().execute(new FileSpider(f.getAbsolutePath())) ;
                 
             }
         }

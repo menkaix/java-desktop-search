@@ -1,5 +1,5 @@
 import core.threads.FileSpider;
-import core.threads.SpiderPoolInternal;
+import core.threads.SpiderPool;
 
 
 public class Main {
@@ -8,7 +8,7 @@ public class Main {
 		
 		
 		System.out.println("Hello world");
-		SpiderPoolInternal.getInstance().execute(new FileSpider());
+		//SpiderPool.getInstance().execute(new FileSpider());
 		
 	}
 
