@@ -8,21 +8,42 @@ import core.events.SpiderListener;
 
 public class FileSpider extends Thread{
     
-    public String filePath ;
     private Vector<SpiderListener> listeners = new Vector<SpiderListener>() ;
+	
+    public String filePath ;
+	public SpiderState state ;
+	public int priority = 0 ;
     
-    public FileSpider(){
-        this(".");
-    }
-    
-    public FileSpider(String path){
-        filePath = path ;
-        
-    }
-    
-    public void run(){
+    private synchronized void fireSpiderEnd() {
+		
+		for(SpiderListener l : listeners){
+			l.onSpiderEnd(this);
+		}
+		
+	}
+
+	private synchronized void fireSpiderBegin() {
+		
+		for(SpiderListener l : listeners){
+			l.onSpiderBegin(this);
+		}
+		
+	}
+
+	public synchronized void start(){
+		if(state == SpiderState.IS_READY){
+			super.start();
+		}
+		else{
+			System.err.println("Launching "+state.toString()+" Spider : "+filePath);
+		}
+	}
+	
+	public void run(){
     	
     	fireSpiderBegin();
+    	
+    	state = SpiderState.IS_ACTIVE ;
         
         File file = new File(filePath);
         
@@ -30,7 +51,7 @@ public class FileSpider extends Thread{
             File[] children = file.listFiles();
             for(File f : children){
                 
-            	//SpiderPool.getInstance().execute(new FileSpider(f.getAbsolutePath())) ;
+            	SpiderPool.getInstance().execute(new FileSpider(f.getAbsolutePath())) ;
                 
             }
         }
@@ -39,26 +60,24 @@ public class FileSpider extends Thread{
             
         }
         fireSpiderEnd();
+        state=SpiderState.IS_DONE ;
     }
     
-    private void fireSpiderEnd() {
-    	
-		for(SpiderListener l : listeners){
-			l.onSpiderEnd(this);
-		}
-		
-	}
-
-	private void fireSpiderBegin() {
-		
-		for(SpiderListener l : listeners){
-			l.onSpiderBegin(this);
-		}
-		
-	}
-
-	public void eat(){
-    	System.out.println(filePath);
+    public synchronized void addSpiderListener(SpiderListener spiderlistener){
+    	listeners.add(spiderlistener) ;
     }
+    
+    public void eat(){
+    	System.out.println("("+Thread.activeCount()+") "+filePath);
+    }
+
+	public FileSpider(){
+	    this(".");
+	}
+
+	public FileSpider(String path){
+	    filePath = path ;
+	    
+	}
     
 }

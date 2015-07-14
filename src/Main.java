@@ -8,7 +8,8 @@ public class Main {
 		
 		
 		System.out.println("Hello world");
-		//SpiderPool.getInstance().execute(new FileSpider());
+		SpiderPool.getInstance().execute(new FileSpider("C:/"));
+		SpiderPool.getInstance().start();
 		
 	}
 
