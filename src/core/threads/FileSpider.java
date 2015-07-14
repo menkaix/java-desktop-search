@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Vector;
 
 import core.events.SpiderListener;
+import core.file.utils.MimeTypeFinder;
 
 
 public class FileSpider extends Thread{
@@ -13,6 +14,7 @@ public class FileSpider extends Thread{
     public String filePath ;
 	public SpiderState state ;
 	public int priority = 0 ;
+	public File file ;
     
     private synchronized void fireSpiderEnd() {
 		
@@ -45,7 +47,7 @@ public class FileSpider extends Thread{
     	
     	state = SpiderState.IS_ACTIVE ;
         
-        File file = new File(filePath);
+        file = new File(filePath);
         
         if(file.isDirectory()){
             File[] children = file.listFiles();
@@ -68,7 +70,7 @@ public class FileSpider extends Thread{
     }
     
     public void eat(){
-    	System.out.println("("+Thread.activeCount()+") "+filePath);
+    	System.out.println("("+Thread.activeCount()+") "+MimeTypeFinder.getMimeType(file)+" : "+filePath);
     }
 
 	public FileSpider(){
