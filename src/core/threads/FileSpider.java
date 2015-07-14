@@ -32,6 +32,10 @@ public class FileSpider extends Thread{
 		
 	}
 
+	public void eat(){
+		System.out.println("("+Thread.activeCount()+") "+MimeTypeFinder.getMimeType(file)+" : "+filePath);
+	}
+
 	public synchronized void start(){
 		if(state == SpiderState.IS_READY){
 			super.start();
@@ -69,11 +73,7 @@ public class FileSpider extends Thread{
     	listeners.add(spiderlistener) ;
     }
     
-    public void eat(){
-    	System.out.println("("+Thread.activeCount()+") "+MimeTypeFinder.getMimeType(file)+" : "+filePath);
-    }
-
-	public FileSpider(){
+    public FileSpider(){
 	    this(".");
 	}
 
