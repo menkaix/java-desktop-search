@@ -12,8 +12,10 @@ public abstract class SuperSpider extends Thread {
 	
 	private Vector<SpiderListener> listeners = new Vector<SpiderListener>() ;
 	
+	public static long spiderCount = 0 ; 	
 	
-	public int SpiderID = 0 ;
+	public long spiderID = 0 ;
+		
     public String filePath ;
 	public SpiderState state ;
 	public int priority = 0 ;
@@ -35,7 +37,7 @@ public abstract class SuperSpider extends Thread {
 		
 	}
 	
-public void run(){
+	public void run(){
     	
     	fireSpiderBegin();
     	
@@ -59,7 +61,14 @@ public void run(){
         state=SpiderState.IS_DONE ;
     }
 
-
+	public synchronized void start(){
+		if(state == SpiderState.IS_READY){
+			super.start();
+		}
+		else{
+			System.err.println("Launching "+state.toString()+" Spider : "+filePath);
+		}
+	}
 	
 	public synchronized void addSpiderListener(SpiderListener spiderlistener){
 		listeners.add(spiderlistener) ;
@@ -71,16 +80,10 @@ public void run(){
 	
 	public SuperSpider(String path){
 	    filePath = path ;
+	    spiderID = ++spiderCount ;
 	    
 	}
 	
-	public synchronized void start(){
-		if(state == SpiderState.IS_READY){
-			super.start();
-		}
-		else{
-			System.err.println("Launching "+state.toString()+" Spider : "+filePath);
-		}
-	}
+	
 
 }

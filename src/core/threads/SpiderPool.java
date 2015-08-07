@@ -134,7 +134,7 @@ public class SpiderPool extends Vector<SuperSpider> {
 		public void onSpiderBegin(SuperSpider source) {
 			
 			runningSpider ++ ;
-			System.out.println(source.filePath+">"+runningSpider);
+			System.out.println("["+source.spiderID+"-"+SuperSpider.spiderCount+"]"+source.filePath+">"+runningSpider);
 			
 		}
 
@@ -142,7 +142,7 @@ public class SpiderPool extends Vector<SuperSpider> {
 			
 			runningSpider -- ; 
 			spiderlaunched -- ;
-			System.out.println(source.filePath+"<"+runningSpider);
+			System.out.println("["+source.spiderID+"-"+SuperSpider.spiderCount+"]"+source.filePath+"<"+runningSpider);
 			
 		}
 		
@@ -151,7 +151,7 @@ public class SpiderPool extends Vector<SuperSpider> {
 			while(emptyCount  < 2){
 				
 				if(runningSpider<0 || runningSpider>maxRunning){
-					System.err.println("Illegal running spider count");
+					System.err.println("Illegal running spider count : "+runningSpider);
 					System.exit(1);
 				}
 				
