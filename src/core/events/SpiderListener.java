@@ -2,11 +2,11 @@ package core.events;
 
 import java.util.EventListener;
 
-import core.threads.FileSpider;
+import core.threads.SuperSpider;
 
 public interface SpiderListener extends EventListener {
 	
-	public void onSpiderBegin(FileSpider source);
-	public void onSpiderEnd(FileSpider source);
+	public void onSpiderBegin(SuperSpider source);
+	public void onSpiderEnd(SuperSpider source);
 
 }

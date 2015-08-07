@@ -16,7 +16,7 @@ import core.events.SpiderListener;
  *
  * @author mendrika
  */
-public class SpiderPool extends Vector<FileSpider> {
+public class SpiderPool extends Vector<SuperSpider> {
     
     //================= SINGLETON ===========================================
     
@@ -58,7 +58,7 @@ public class SpiderPool extends Vector<FileSpider> {
     	runner.start();
     }
     
-    public void execute(FileSpider spider){
+    public void execute(SuperSpider spider){
     	
     	spider.state = SpiderState.IS_READY ;    	
     	this.add(spider);
@@ -66,9 +66,9 @@ public class SpiderPool extends Vector<FileSpider> {
     }
     
     public synchronized void defrag(){
-    	Vector<FileSpider> tmp = new Vector<FileSpider>();
+    	Vector<SuperSpider> tmp = new Vector<SuperSpider>();
     	
-    	for(FileSpider spider : this){
+    	for(SuperSpider spider : this){
     		if(spider.state != SpiderState.IS_DONE){
     			tmp.add(spider);
     		}
@@ -90,7 +90,7 @@ public class SpiderPool extends Vector<FileSpider> {
     			int n = SpiderPool.this.size();
     			int i = 0 ;
     			if(n>0){
-    				for(FileSpider spider : SpiderPool.this ){
+    				for(SuperSpider spider : SpiderPool.this ){
 		    			if(spider.state == SpiderState.IS_DONE){
 		    				i++ ;
 		    			}
@@ -123,33 +123,45 @@ public class SpiderPool extends Vector<FileSpider> {
     
     public class Runner extends Thread implements SpiderListener{
     	
+    	int spiderlaunched = 0 ;
     	int runningSpider = 0 ;
     	int emptyCount = 0 ;
     	
-    	final int maxRunning = 49 ; 
+    	final int maxRunning = 12 ; 
     	
     	final Object lock = new Object() ;
 
-		public void onSpiderBegin(FileSpider source) {
+		public void onSpiderBegin(SuperSpider source) {
 			
 			runningSpider ++ ;
+			System.out.println(source.filePath+">"+runningSpider);
 			
 		}
 
-		public void onSpiderEnd(FileSpider source) {
+		public void onSpiderEnd(SuperSpider source) {
 			
 			runningSpider -- ; 
-			
+			spiderlaunched -- ;
+			System.out.println(source.filePath+"<"+runningSpider);
 			
 		}
 		
 		public void run(){
 			
-			while(emptyCount  < 12){
-				int r = maxRunning-runningSpider ;
+			while(emptyCount  < 2){
+				
+				if(runningSpider<0 || runningSpider>maxRunning){
+					System.err.println("Illegal running spider count");
+					System.exit(1);
+				}
+				
+				
+//				int r = maxRunning-runningSpider ;
+				int r = maxRunning-spiderlaunched ;
+				
 				int size = r<SpiderPool.this.size() ? r : SpiderPool.this.size() ;
 				if(size<0)size=0 ;
-				FileSpider [] runs = new FileSpider[size];
+				SuperSpider [] runs = new SuperSpider[size];
 				
 				//System.out.println("Preparing "+(size)+" Spiders of "+SpiderPool.this.size()+" in Queue and "+runningSpider+" running");
 				
@@ -159,7 +171,7 @@ public class SpiderPool extends Vector<FileSpider> {
 							
 					synchronized(SpiderPool.this){
 						if(runs.length >0){
-							for(FileSpider spider : SpiderPool.this){
+							for(SuperSpider spider : SpiderPool.this){
 								if(spider.state == SpiderState.IS_READY && spider.priority>=maxPriority){
 									for(int i=runs.length - 1 ; i>0 ; i--){
 										runs[i] = runs[i-1];
@@ -172,14 +184,12 @@ public class SpiderPool extends Vector<FileSpider> {
 											
 					}
 						
-					
-					
-					
 					for(int i=0 ; i<runs.length ; i++){
 						if(runs[i]!=null && runs[i].state == SpiderState.IS_READY){
 							//System.out.println("Running "+(i+1)+" of "+runs.length);
 							runs[i].addSpiderListener(this); 
 							try{
+								spiderlaunched++;
 								runs[i].start();
 							}catch (IllegalThreadStateException e){
 								//System.err.println(runs[i].filePath+" ->" +e.getMessage() +" : "+runs[i].getState());
@@ -189,7 +199,7 @@ public class SpiderPool extends Vector<FileSpider> {
 					}
 					
 					synchronized (SpiderPool.this) {
-						for(FileSpider spider : SpiderPool.this){
+						for(SuperSpider spider : SpiderPool.this){
 							if(spider.state ==  SpiderState.IS_READY){
 								spider.priority++ ;
 							}
