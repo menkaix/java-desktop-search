@@ -85,29 +85,30 @@ public class SpiderPool extends Vector<SuperSpider> {
     	
     	public void run(){
     		
-    		while(emptyTry<10){
-    			//System.out.println("Managing");
-    			int n = SpiderPool.this.size();
-    			int i = 0 ;
-    			if(n>0){
-    				for(SuperSpider spider : SpiderPool.this ){
-		    			if(spider.state == SpiderState.IS_DONE){
-		    				i++ ;
-		    			}
-		    		}
-    				if(i/n > 0.5){
-    					SpiderPool.this.defrag();
-    				}
-    			}
-    			else {
-    			
-    				emptyTry++;
-    				
-    			}
-    			
-    			//System.out.println("Managing "+n+" elements with "+i+" idles");
-		    	
-    			try {
+    		
+			while(emptyTry<10){
+				//System.out.println("Managing");
+				int n = SpiderPool.this.size();
+				int i = 0 ;
+				if(n>0){
+					for(SuperSpider spider : SpiderPool.this ){
+						if(spider.state == SpiderState.IS_DONE){
+							i++ ;
+						}
+					}
+					if(i/n > 0.5){
+						SpiderPool.this.defrag();
+					}
+				}
+				else {
+					
+					emptyTry++;
+					
+				}
+				
+				//System.out.println("Managing "+n+" elements with "+i+" idles");
+				
+				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -134,6 +135,7 @@ public class SpiderPool extends Vector<SuperSpider> {
 		public void onSpiderBegin(SuperSpider source) {
 			
 			runningSpider ++ ;
+			source.priority = 0 ;
 			System.out.println("["+source.spiderID+"-"+SuperSpider.spiderCount+"]"+source.filePath+">"+runningSpider);
 			
 		}

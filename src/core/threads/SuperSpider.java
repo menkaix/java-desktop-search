@@ -15,20 +15,20 @@ public abstract class SuperSpider extends Thread {
 	public static long spiderCount = 0 ; 	
 	
 	public long spiderID = 0 ;
-		
-    public String filePath ;
+	
+	public String filePath ;
 	public SpiderState state ;
 	public int priority = 0 ;
 	public File file ;
-    
-    private synchronized void fireSpiderEnd() {
+	
+	private synchronized void fireSpiderEnd() {
 		
 		for(SpiderListener l : listeners){
 			l.onSpiderEnd(this);
 		}
 		
 	}
-
+	
 	private synchronized void fireSpiderBegin() {
 		
 		for(SpiderListener l : listeners){
@@ -38,32 +38,35 @@ public abstract class SuperSpider extends Thread {
 	}
 	
 	public void run(){
-    	
-    	fireSpiderBegin();
-    	
-    	state = SpiderState.IS_ACTIVE ;
-        
-        file = new File(filePath);
-        
-        if(file.isDirectory()){
-            File[] children = file.listFiles();
-            for(File f : children){
-                
-            	breed(f);
-                
-            }
-        }
-        else {
-            eat() ;
-            
-        }
-        fireSpiderEnd();
-        state=SpiderState.IS_DONE ;
-    }
+		
+		file = new File(filePath);
+		
+		if(file.isDirectory()){
+			File[] children = file.listFiles();
+			for(File f : children){
+				
+				breed(f);
+				
+			}
+		}
+		else {
+			eat() ;
+			
+		}
+		fireSpiderEnd();
+		state=SpiderState.IS_DONE ;
+	}
 
 	public synchronized void start(){
 		if(state == SpiderState.IS_READY){
+			
+			state = SpiderState.IS_ACTIVE ;
+			
+			fireSpiderBegin();
+			
 			super.start();
+			
+			
 		}
 		else{
 			System.err.println("Launching "+state.toString()+" Spider : "+filePath);
@@ -75,13 +78,13 @@ public abstract class SuperSpider extends Thread {
 	}
 	
 	public SuperSpider(){
-	    this(".");
+		this(".");
 	}
 	
 	public SuperSpider(String path){
-	    filePath = path ;
-	    spiderID = ++spiderCount ;
-	    
+		filePath = path ;
+		spiderID = ++spiderCount ;
+		
 	}
 	
 	
