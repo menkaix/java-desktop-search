@@ -14,10 +14,11 @@ public class DatabaseHelper {
 	//private Connection connexion ;
 	private Statement transmission ;
 	private ResultSet result ;
-	public static String host = "172.28.60.74";
-	public static String db = "testBig" ;
-	public static String user = "root";
-	public static String passwd = "mendrika";
+	
+	public String host = "172.28.60.74";
+	public String db = "testBig" ;
+	public String user = "root";
+	public String passwd = "mendrika";
 	
 	
 	public static Object dbLock = new Object();
@@ -125,13 +126,15 @@ public class DatabaseHelper {
 	
 	public String updateRequest(final String s){
 		final String ans = s ;
-		(new Thread(){
-			public void run(){
-				
-				update(s);
-				
-			}
-		}).start();
+//		(new Thread(){
+//			public void run(){
+//				
+//				update(s);
+//				
+//			}
+//		}).start();
+		
+		update(s);
 		
 		return ans ;
 		
@@ -140,6 +143,17 @@ public class DatabaseHelper {
 
 	public DatabaseHelper(){
 		super();
+			
+	}
+	
+	
+	public DatabaseHelper(String host, String user, String pass, String database){
+		super();
+		
+		this.host = host;
+		this.db = database ;
+		this.user = user;
+		this.passwd = pass;
 				
 	}
 	

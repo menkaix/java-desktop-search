@@ -39,10 +39,6 @@ public abstract class SuperSpider extends Thread {
 	
 	public void run(){
     	
-    	fireSpiderBegin();
-    	
-    	state = SpiderState.IS_ACTIVE ;
-        
         file = new File(filePath);
         
         if(file.isDirectory()){
@@ -62,8 +58,19 @@ public abstract class SuperSpider extends Thread {
     }
 
 	public synchronized void start(){
+		
+		
+		
 		if(state == SpiderState.IS_READY){
+							    	
+	    	state = SpiderState.IS_ACTIVE ;
+	    	
+	    	priority = 0 ;
+	    	
+	    	fireSpiderBegin();
+	    	
 			super.start();
+			
 		}
 		else{
 			System.err.println("Launching "+state.toString()+" Spider : "+filePath);
