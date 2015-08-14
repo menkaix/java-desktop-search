@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.NoSuchElementException;
 
-public class DatabaseHelper {
+public class DataAccess {
 	
 	
 	//private Connection connexion ;
@@ -141,13 +141,13 @@ public class DatabaseHelper {
 	}
 
 
-	public DatabaseHelper(){
+	public DataAccess(){
 		super();
 			
 	}
 	
 	
-	public DatabaseHelper(String host, String user, String pass, String database){
+	public DataAccess(String host, String user, String pass, String database){
 		super();
 		
 		this.host = host;
