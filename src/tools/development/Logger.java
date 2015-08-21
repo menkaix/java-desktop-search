@@ -1,4 +1,7 @@
 package tools.development;
+
+
+
 /**
  * Cette détecte l'origine directe d'une exception (fichier source et ligne) ainsi que les messages d'erreur
  * et d'autre informations
@@ -6,7 +9,6 @@ package tools.development;
  *
  */
 public class Logger {
-	
 	
 	/**
 	 * Afficche le ficher et la ligne de l'erreur
@@ -16,17 +18,39 @@ public class Logger {
 	public static void error(Throwable e, String...comments)
 	{
 		
+		
+		System.out.println(stringError(e, comments));
+		
+		
+	}
+	
+	public static String stringError(Throwable e, String...comments)
+	{
 		StackTraceElement[] stack = e.getStackTrace();
 		
-		StackTraceElement elt = stack[0];
+		int lineNumber ;
+		String fileName ;
 		
-		if(comments.length>0){
-			System.out.println("[E] -> "+elt.getFileName()+" l."+elt.getLineNumber()+" : "+e.getClass().getSimpleName()+":"+e.getMessage()+" - "+comments[0]);
+		int i=-1 ;
+		
+		do{
+		StackTraceElement elt = stack[++i];
+		
+		lineNumber = elt.getLineNumber() ;
+		fileName = elt.getFileName() ;
+		
+		if (i!=0){
+			fileName = "* "+fileName;
+		}
+		
+		}while (lineNumber==-1);
+		
+		if(comments.length>0 && comments!=null){
+			return ("[E] -> "+fileName+" l."+lineNumber+" : "+e.getClass().getSimpleName()+":"+e.getMessage()+" - "+comments[0]);
 		}
 		else{
-			System.out.println("[E] -> "+elt.getFileName()+" l."+elt.getLineNumber()+" : "+e.getClass().getSimpleName()+":"+e.getMessage());
+			return("[E] -> "+fileName+" l."+lineNumber+" : "+e.getClass().getSimpleName()+":"+e.getMessage());
 		}
-		
 	}
 	
 	/**
@@ -71,5 +95,6 @@ public class Logger {
 		}
 		
 	}
+
 
 }
