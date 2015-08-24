@@ -7,21 +7,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import tools.development.Logger;
 
 public class DataAccess {
 	
 	
+	private static Executor executor = Executors.newCachedThreadPool() ;
 	//private Connection connexion ;
 	private Statement transmission ;
 	private ResultSet result ;
 	
+	public static Object dbLock = new Object();
 	public String host = "172.28.60.74";
 	public String db = "testBig" ;
 	public String user = "root";
 	public String passwd = "mendrika";
-	
-	
-	public static Object dbLock = new Object();
 	
 	private Connection dbConnect() {
 		try {
@@ -31,12 +34,10 @@ public class DataAccess {
 				return lconnexion ;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.error(e);
 			return null ;
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.error(e);
 			return null ;
 		}
 		
@@ -47,15 +48,24 @@ public class DataAccess {
 	{
 		synchronized(dbLock){
 			
-		 	Connection connexion=dbConnect();
-		    try {
+			Connection connexion=dbConnect();
+			try {
 				transmission = connexion.createStatement() ;
 				transmission.executeUpdate(request);
 				connexion.close();
 			} catch (SQLException e) {
-				System.out.println("update: "+e.getMessage());
+				Logger.error(e,host +" : "+ request);
+				
+				
 			}catch (NullPointerException e) {
-				System.out.println("update: "+e.getMessage());
+				Logger.error(e);
+			}
+			finally{
+				try {
+					connexion.close();
+				} catch (SQLException e1) {
+					Logger.error(e1,host +" : "+ "aborting connexion");
+				}
 			}
 			
 		}				
@@ -68,7 +78,9 @@ public class DataAccess {
 		String request = "" ;
 		
 		synchronized(dbLock){
-					
+			
+			Connection connexion = dbConnect();
+			
 			try {
 				
 				//préparation de la requête sql
@@ -84,13 +96,10 @@ public class DataAccess {
 				
 				//execution de la requête sql
 				
-				Connection connexion = dbConnect();			
 				transmission = connexion.createStatement();			
 				result =transmission.executeQuery(request);
 				
-	
-				
-				//traitemant de la réponse
+				//traitement de la réponse
 				while(result.next()){
 					int colN = 1 ;
 					char [] formatChars = format.toCharArray() ;
@@ -99,25 +108,31 @@ public class DataAccess {
 						if(c != '#')
 						{
 							ans = ans+c;
-							
 						}
 						else {
 							String val = result.getString(colN++);
 							ans = ans+val ;
-							
 						}
-					}				
+					}
 				}
-				
-				connexion.close();
 				
 			}  catch (SQLException e) {
 				
-				e.printStackTrace();
+				Logger.error(e,host +" : "+ request);
+				
 				return request + " : " + e.getMessage() ;
 			} catch (NoSuchElementException e){
-				e.printStackTrace();
-				return request + " : " + e.getMessage() ;
+				
+				Logger.error(e,host);
+				
+				
+			}
+			finally{
+				try {
+					connexion.close();
+				} catch (SQLException e1) {
+					Logger.error(e1,host +" : "+ "aborting connexion");
+				}
 			}
 		}
 		return ans.toString() ;
@@ -126,24 +141,17 @@ public class DataAccess {
 	
 	public String updateRequest(final String s){
 		final String ans = s ;
-//		(new Thread(){
-//			public void run(){
-//				
-//				update(s);
-//				
-//			}
-//		}).start();
 		
 		update(s);
 		
 		return ans ;
 		
 	}
-
-
+	
+	
 	public DataAccess(){
 		super();
-			
+		
 	}
 	
 	
@@ -154,9 +162,9 @@ public class DataAccess {
 		this.db = database ;
 		this.user = user;
 		this.passwd = pass;
-				
+		
 	}
 	
-
+	
 	
 }
