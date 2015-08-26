@@ -21,10 +21,10 @@ public class DataAccess {
 	private ResultSet result ;
 	
 	public static Object dbLock = new Object();
-	public String host = "172.28.60.74";
-	public String db = "testBig" ;
-	public String user = "root";
-	public String passwd = "mendrika";
+	public String host = "";
+	public String db = "" ;
+	public String user = "";
+	public String passwd = "";
 	
 	private Connection dbConnect() {
 		try {
@@ -91,7 +91,13 @@ public class DataAccess {
 				{		
 						requestBuffer.append(columns[i]+", ");			
 				}
-				requestBuffer.append(columns[n-1]+" from "+table+" where "+where);			
+				//TODO permettre les requêtes sans where
+				requestBuffer.append(columns[n-1]+" from "+table);
+				
+				if(!where.equalsIgnoreCase("") && where!=null){
+					requestBuffer.append(" where "+where);
+				}
+				
 				request = requestBuffer.toString() +"; \n" ;
 				
 				//execution de la requête sql
