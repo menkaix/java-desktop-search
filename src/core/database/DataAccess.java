@@ -29,8 +29,11 @@ public class DataAccess {
 	private Connection dbConnect() {
 		try {
 			
-				Class.forName("com.mysql.jdbc.Driver");
-				Connection lconnexion =  DriverManager.getConnection("jdbc:mysql://"+host+"/"+db,user,passwd);
+				//Class.forName("com.mysql.jdbc.Driver");
+				Class.forName("org.sqlite.JDBC");
+				
+				//Connection lconnexion =  DriverManager.getConnection("jdbc:mysql://"+host+"/"+db,user,passwd);
+				Connection lconnexion = DriverManager.getConnection("jdbc:sqlite:sample.db");
 				return lconnexion ;
 			
 		} catch (SQLException e) {

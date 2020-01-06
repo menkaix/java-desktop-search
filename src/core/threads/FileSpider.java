@@ -12,7 +12,7 @@ public class FileSpider extends SuperSpider{
     
 
 	public void eat(){
-		System.out.println("("+Thread.activeCount()+") "+MimeTypeFinder.getMimeType(file)+" : "+filePath);
+		System.out.println("<"+Thread.activeCount()+"> "+MimeTypeFinder.getMimeType(file)+" => "+filePath);
 	}
 
 	

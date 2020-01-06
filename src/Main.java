@@ -8,7 +8,7 @@ public class Main {
 		
 		
 		System.out.println("Hello world");
-		SpiderPool.getInstance().execute(new FileSpider("C:/"));
+		SpiderPool.getInstance().execute(new FileSpider("C:\\Users\\mendrika\\Downloads\\old 20191228"));
 		SpiderPool.getInstance().start();
 		
 	}
