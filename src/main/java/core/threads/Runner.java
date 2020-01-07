@@ -55,9 +55,9 @@ public class Runner extends Thread implements SpiderListener{
 			
 			
 //			int r = maxRunning-runningSpider ;
-			int r = maxRunning-spiderlaunched ;
+			int remainingFreeSlots = maxRunning-spiderlaunched ;
 			
-			int size = r<SpiderPool.getInstance().size() ? r : SpiderPool.getInstance().size() ;
+			int size = remainingFreeSlots<SpiderPool.getInstance().size() ? remainingFreeSlots : SpiderPool.getInstance().size() ;
 			if(size<0)size=0 ;
 			SuperSpider [] runs = new SuperSpider[size];
 			
@@ -66,14 +66,19 @@ public class Runner extends Thread implements SpiderListener{
 			int maxPriority = 0 ;
 			
 			if(SpiderPool.getInstance().size()>0 ){
-						
+					
+				//insert the new thread	
 				synchronized(SpiderPool.getInstance()){
 					if(runs.length >0){
 						for(SuperSpider spider : SpiderPool.getInstance()){
+							
 							if(spider.state == SpiderState.IS_READY && spider.priority>=maxPriority){
+								
 								for(int i=runs.length - 1 ; i>0 ; i--){
+									
 									runs[i] = runs[i-1];
 								}
+								
 								runs[0] = spider ;
 							}
 						}
@@ -82,6 +87,7 @@ public class Runner extends Thread implements SpiderListener{
 										
 				}
 					
+				//Run all the threads
 				for(int i=0 ; i<runs.length ; i++){
 					if(runs[i]!=null && runs[i].state == SpiderState.IS_READY){
 						//System.out.println("Running "+(i+1)+" of "+runs.length);
@@ -96,6 +102,7 @@ public class Runner extends Thread implements SpiderListener{
 					
 				}
 				
+				//increase the priority of the remaining threads
 				synchronized (SpiderPool.getInstance()) {
 					for(SuperSpider spider : SpiderPool.getInstance()){
 						if(spider.state ==  SpiderState.IS_READY){
