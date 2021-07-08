@@ -153,7 +153,8 @@ public class SpiderPool extends Vector<SuperSpider> {
 			while(emptyCount  < 2){
 				
 				if(runningSpider<0 || runningSpider>maxRunning){
-					System.err.println("Illegal running spider count : "+runningSpider);
+					System.err.println("Illegal running spider count : "+runningSpider+"\nBye");
+					
 					System.exit(1);
 				}
 				
@@ -212,7 +213,7 @@ public class SpiderPool extends Vector<SuperSpider> {
 				}
 				else
 				{
-					emptyCount ++ ;
+					emptyCount ++ ;//What dies it do ?
 					
 					try {
 						Thread.sleep(1000);
@@ -221,7 +222,8 @@ public class SpiderPool extends Vector<SuperSpider> {
 						e.printStackTrace();
 					}
 				}
-			}
+			}//while(emptyCount  < 2)
+			System.out.println("Bye");
 			
 		}
     	

@@ -10,11 +10,22 @@ public class MimeTypeFinder {
 	public static String getMimeType(File file){
 		
 		try {
-			if(file.isDirectory()){
-				return "Direcory";
-			}
-			else{
-				return Files.probeContentType(Paths.get(file.getAbsolutePath()));
+			if(file.isFile()){
+								
+				String mime = Files.probeContentType(Paths.get(file.getAbsolutePath()));
+				
+				if(mime==null && file.getAbsolutePath().endsWith(".rar")) {
+					mime = "archive/rar";
+				}
+				
+				if(mime==null && file.getAbsolutePath().endsWith(".iso")) {
+					mime = "application/disk-image";
+				}
+				
+				
+				return mime ;
+			}else {
+				return "directory";
 			}
 			
 		} catch (IOException e) {
@@ -26,4 +37,6 @@ public class MimeTypeFinder {
 		return "Error" ;
 	}
 
+	
+	
 }
