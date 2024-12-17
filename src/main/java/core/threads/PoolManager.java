@@ -1,58 +1,51 @@
 package core.threads;
 
-public class PoolManager extends Thread{
-	
-	int emptyTry = 0 ;
-	
-	public void run(){
-		
-		while(emptyTry<10){
-			//System.out.println("Managing");
-			int n = SpiderPool.getInstance().size();
-			int i = 0 ;
-			if(n>0){
-				for(SuperSpider spider : SpiderPool.getInstance() ){
-	    			if(spider.state == SpiderState.IS_DONE){
-	    				i++ ;
-	    			}
-	    		}
-				if(i/n > 0.5){
-					SpiderPool.getInstance().defrag();
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class PoolManager extends Thread {
+
+	private static final Logger logger = Logger.getLogger(PoolManager.class.getName());
+	int emptyTry = 0;
+
+	public void run() {
+		try {
+			while (emptyTry < 10) {
+				int n = SpiderPool.getInstance().size();
+				int i = 0;
+				if (n > 0) {
+					for (SuperSpider spider : SpiderPool.getInstance()) {
+						if (spider.state == SpiderState.IS_DONE) {
+							i++;
+						}
+					}
+					if (i / n > 0.5) {
+						SpiderPool.getInstance().defrag();
+					}
+				} else {
+					emptyTry++;
 				}
-			}
-			else {
-			
-				emptyTry++;
-				
-			}
-			
-			//System.out.println("Managing "+n+" elements with "+i+" idles");
-	    	
-			try {
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			
+		} catch (InterruptedException e) {
+			logger.log(Level.SEVERE, "PoolManager thread interrupted", e);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "An error occurred in PoolManager", e);
 		}
-		
-		
 	}
-	
-private static PoolManager instance ;
-	
-	public static PoolManager getInstance(){
-		if(instance == null){
+
+	private static PoolManager instance;
+
+	public static PoolManager getInstance() {
+		if (instance == null) {
 			instance = new PoolManager();
 		}
-		
-		return instance ;
+
+		return instance;
 	}
-	
-	private PoolManager(){
-		super() ;
+
+	private PoolManager() {
+		super();
 	}
-	
-	
+
 }
