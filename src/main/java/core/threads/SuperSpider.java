@@ -33,7 +33,7 @@ public abstract class SuperSpider extends Thread {
 			SpiderPool.getInstance().execute(new ZipSpider(f.getAbsolutePath()));
 		}else {
 			//if(mimeType.equals())
-			System.out.println(f.getAbsolutePath()+"<->"+mimeType);
+			//System.out.println(f.getAbsolutePath()+"<->"+mimeType);
 			SpiderPool.getInstance().execute(new FileSpider(f.getAbsolutePath())) ;
 		}
 		
@@ -70,7 +70,7 @@ public abstract class SuperSpider extends Thread {
 					
 					if(directoryType.equals(DirectoryTypeFinder.UNKNOWN)) {
 						
-						System.out.println("unknown directory "+filePath+" => breeding");
+						//System.out.println("unknown directory "+filePath+" => breeding");
 						
 						for (File f : children) {
 							
@@ -79,7 +79,7 @@ public abstract class SuperSpider extends Thread {
 						}
 					}
 					else {
-						System.out.println("-->"+directoryType+" => "+filePath);
+						//System.out.println("-->"+directoryType+" => "+filePath);
 						//eat() ;
 					}
 					
