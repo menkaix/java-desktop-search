@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+group = 'java-desktop-seach'
+version = '0.0.1-SNAPSHOT'
+
+description = 'file manager for your desktop'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+}
