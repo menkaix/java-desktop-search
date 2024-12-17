@@ -6,37 +6,25 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class MimeTypeFinder {
-	
-	public static String getMimeType(File file){
-		
+
+	public static String getMimeType(File file) {
+
 		try {
-			if(file.isFile()){
-								
+			if (file.isFile()) {
+
 				String mime = Files.probeContentType(Paths.get(file.getAbsolutePath()));
-				
-				if(mime==null && file.getAbsolutePath().endsWith(".rar")) {
-					mime = "archive/rar";
-				}
-				
-				if(mime==null && file.getAbsolutePath().endsWith(".iso")) {
-					mime = "application/disk-image";
-				}
-				
-				
-				return mime ;
-			}else {
+
+				return mime != null ? mime : "unknown";
+			} else {
 				return "directory";
 			}
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		return "Error" ;
+
+		return "Error";
 	}
 
-	
-	
 }
